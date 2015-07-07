@@ -1,11 +1,14 @@
 var VeloNumberInput = require("components/velo-number-input");
 var VeloSliderInput = require("components/velo-slider-input");
 
+require("./index.less");
+
 function ValueSlider () {
 	this.mediator = require("utils/mediator").getInstance();
 	this.el = document.createElement("div");
 	this.veloNumber = new VeloNumberInput();
 	this.veloRange = new VeloSliderInput();
+	this.el.className = "velo-control-component";
 	this.el.appendChild(this.veloNumber.getDOMNode());
 	this.el.appendChild(this.veloRange.getDOMNode());
 

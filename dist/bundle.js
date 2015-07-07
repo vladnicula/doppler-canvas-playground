@@ -375,17 +375,20 @@ StarCanvas.prototype.alertImagePixel = function ( value ) {
 }
 
 module.exports = StarCanvas;
-},{"./index.less":3,"utils/math":11,"utils/mediator":12}],3:[function(require,module,exports){
+},{"./index.less":3,"utils/math":12,"utils/mediator":13}],3:[function(require,module,exports){
 
 },{}],4:[function(require,module,exports){
 var VeloNumberInput = require("components/velo-number-input");
 var VeloSliderInput = require("components/velo-slider-input");
+
+require("./index.less");
 
 function ValueSlider () {
 	this.mediator = require("utils/mediator").getInstance();
 	this.el = document.createElement("div");
 	this.veloNumber = new VeloNumberInput();
 	this.veloRange = new VeloSliderInput();
+	this.el.className = "velo-control-component";
 	this.el.appendChild(this.veloNumber.getDOMNode());
 	this.el.appendChild(this.veloRange.getDOMNode());
 
@@ -413,7 +416,9 @@ ValueSlider.prototype.setValue = function ( value ) {
 }
 
 module.exports = ValueSlider;
-},{"components/velo-number-input":5,"components/velo-slider-input":7,"utils/mediator":12}],5:[function(require,module,exports){
+},{"./index.less":5,"components/velo-number-input":6,"components/velo-slider-input":8,"utils/mediator":13}],5:[function(require,module,exports){
+arguments[4][3][0].apply(exports,arguments)
+},{"dup":3}],6:[function(require,module,exports){
 var MyMath = require("utils/math");
 
 require("./index.less");
@@ -462,9 +467,9 @@ VeloNumberInput.prototype.sanitize = function () {
 }
 
 module.exports = VeloNumberInput;
-},{"./index.less":6,"utils/math":11,"utils/mediator":12}],6:[function(require,module,exports){
+},{"./index.less":7,"utils/math":12,"utils/mediator":13}],7:[function(require,module,exports){
 arguments[4][3][0].apply(exports,arguments)
-},{"dup":3}],7:[function(require,module,exports){
+},{"dup":3}],8:[function(require,module,exports){
 var MyMath = require("utils/math");
 require("./index.less");
 
@@ -519,9 +524,9 @@ VeloSliderInput.prototype.onInputValue = function () {
 }
 
 module.exports = VeloSliderInput;
-},{"./index.less":8,"utils/math":11,"utils/mediator":12}],8:[function(require,module,exports){
+},{"./index.less":9,"utils/math":12,"utils/mediator":13}],9:[function(require,module,exports){
 arguments[4][3][0].apply(exports,arguments)
-},{"dup":3}],9:[function(require,module,exports){
+},{"dup":3}],10:[function(require,module,exports){
 require("./index.less");
 
 var
@@ -553,9 +558,9 @@ mediator.on("velocity:changed", function ( value ) {
 mainNode.appendChild( starCanvas.getDOMNode() );
 mainNode.appendChild( valueSldier.getDOMNode() );
 
-},{"./components/star-canvas":2,"./components/velo-control":4,"./index.less":10,"./utils/mediator":12}],10:[function(require,module,exports){
+},{"./components/star-canvas":2,"./components/velo-control":4,"./index.less":11,"./utils/mediator":13}],11:[function(require,module,exports){
 arguments[4][3][0].apply(exports,arguments)
-},{"dup":3}],11:[function(require,module,exports){
+},{"dup":3}],12:[function(require,module,exports){
 module.exports = {
 	
 	Clamp : function ( value, min, max ) {
@@ -576,7 +581,7 @@ module.exports = {
 		return ( 1-w ) * a + w * b;
 	} 
 }
-},{}],12:[function(require,module,exports){
+},{}],13:[function(require,module,exports){
 var instance = null,
 	EventEmitter = require("events").EventEmitter;
 	
@@ -588,4 +593,4 @@ module.exports = {
 		return instance;
 	}
 };
-},{"events":1}]},{},[9]);
+},{"events":1}]},{},[10]);
