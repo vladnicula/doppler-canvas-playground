@@ -3,7 +3,7 @@ require("./index.less");
 var 
 	EventEmitter = require("events").EventEmitter,
 	StarCanvas = require("./components/star-canvas"),
-	ValueSlider = require("./components/value-slider"),
+	ValueSlider = require("./components/velo-control"),
 	Mediator = new EventEmitter();
 
 var starCanvas = new StarCanvas(Mediator);
