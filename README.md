@@ -5,3 +5,5 @@ Uses HTML5 stuff, like the "input" event, canvas (doh!), and slider input.
 Run by opening index.html.
 
 Build by `npm install` and then `gulp`. 
+
+No time === No tests...
