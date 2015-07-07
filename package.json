@@ -1,0 +1,15 @@
+{
+  "name": "doppler-playground",
+  "version": "1.0.0",
+  "description": "A playground project with a canvas and a simluation for the doppler effect",
+  "main": "index.html",
+  "scripts": {
+    "test": "test.js"
+  },
+  "keywords": [
+    "doppler",
+    "canvas"
+  ],
+  "author": "Vlad Nicula <vladnicula@gmail.com> (https://github.com/vladnicula)",
+  "license": "MIT"
+}
