@@ -1,7 +1,18 @@
 require("./index.less");
 
-var StarCanvas = require("./components/star-canvas"),
-	ValueSlider = require("./components/value-slider");
+var 
+	EventEmitter = require("events").EventEmitter,
+	StarCanvas = require("./components/star-canvas"),
+	ValueSlider = require("./components/value-slider"),
+	Mediator = new EventEmitter();
 
-new StarCanvas();
-new ValueSlider();
+var starCanvas = new StarCanvas(Mediator);
+var valueSldier = new ValueSlider(Mediator);
+
+var mainNode = document.getElementById("app-container");
+
+starCanvas.setImage("./src/star-with-transparent-bg.png");
+
+
+mainNode.appendChild( starCanvas.getDOMNode() );
+mainNode.appendChild( valueSldier.getDOMNode() );
