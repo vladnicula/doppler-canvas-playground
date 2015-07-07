@@ -304,9 +304,9 @@ function isUndefined(arg) {
 },{}],2:[function(require,module,exports){
 require("./index.less");
 
-function StarCanvas ( Mediator, options  ) {
+function StarCanvas ( options ) {
 
-	this.mediator = Mediator;
+	this.mediator = require("utils/mediator").getInstance();
 	var canvas = this.canvas = document.createElement("canvas");
 	canvas.className='star-canvas';
 	if ( options && options.imageSrc ) {
@@ -334,34 +334,54 @@ StarCanvas.prototype.setImage = function ( imageSrc ) {
 }
 
 module.exports = StarCanvas;
-},{"./index.less":3}],3:[function(require,module,exports){
+},{"./index.less":3,"utils/mediator":12}],3:[function(require,module,exports){
 
 },{}],4:[function(require,module,exports){
 var VeloNumberInput = require("components/velo-number-input");
 var VeloSliderInput = require("components/velo-slider-input");
 
-function ValueSlider ( Mediator ) {
-	this.mediator = Mediator;
+function ValueSlider () {
+	this.mediator = require("utils/mediator").getInstance();
 	this.el = document.createElement("div");
 	this.veloNumber = new VeloNumberInput();
 	this.veloRange = new VeloSliderInput();
 	this.el.appendChild(this.veloNumber.getDOMNode());
 	this.el.appendChild(this.veloRange.getDOMNode());
+
+	this.mediator.on("velocity:slider:changed", this.setInputValue.bind(this));
+	this.mediator.on("velocity:number:changed", this.setRangeValue.bind(this));
 }
 
 ValueSlider.prototype.getDOMNode = function () {
 	return this.el;
 }
 
+ValueSlider.prototype.setInputValue = function ( value, silent ) {
+	this.veloNumber.setValue(value);
+	!silent && this.mediator.emit("velocity:changed", value);
+}
+
+ValueSlider.prototype.setRangeValue = function ( value, silent ) {
+	this.veloRange.setValue(value);
+	!silent && this.mediator.emit("velocity:changed", value);
+}
+
+ValueSlider.prototype.setValue = function ( value ) {
+	this.setRangeValue(value, true);
+	this.setInputValue(value, true);
+}
+
 module.exports = ValueSlider;
-},{"components/velo-number-input":5,"components/velo-slider-input":7}],5:[function(require,module,exports){
+},{"components/velo-number-input":5,"components/velo-slider-input":7,"utils/mediator":12}],5:[function(require,module,exports){
 var MyMath = require("utils/math");
 
 require("./index.less");
 
 function VeloNumberInput () {
+	this.mediator = require("utils/mediator").getInstance();
 	var el = this.el = document.createElement("input");
 	el.type = 'text';
+	// todo, could be param
 	el.value = 0;
 	el.name = 'velocity-value';
 	el.className ='velo-value';
@@ -371,6 +391,10 @@ function VeloNumberInput () {
 
 VeloNumberInput.prototype.getDOMNode = function () {
 	return this.el;
+}
+
+VeloNumberInput.prototype.setValue = function ( value ) {
+	this.el.value = MyMath.Clamp(value, -100, 100);
 }
 
 VeloNumberInput.prototype.sanitize = function () {
@@ -385,59 +409,101 @@ VeloNumberInput.prototype.sanitize = function () {
 	if ( !number ) {
 		number = 0;
 	}
-
+	// todo, could be params
 	var clampedNumber = MyMath.Clamp(number, -100, 100);
 
 	if ( number != value || number !== clampedNumber ) {
 		el.value = clampedNumber;
 	}
 
+	this.mediator.emit("velocity:number:changed", clampedNumber);
+
 }
 
 module.exports = VeloNumberInput;
-},{"./index.less":6,"utils/math":11}],6:[function(require,module,exports){
+},{"./index.less":6,"utils/math":11,"utils/mediator":12}],6:[function(require,module,exports){
 arguments[4][3][0].apply(exports,arguments)
 },{"dup":3}],7:[function(require,module,exports){
 var MyMath = require("utils/math");
 require("./index.less");
 
 function VeloSliderInput () {
+	this.mediator = require("utils/mediator").getInstance();
+
 	var el = this.el = document.createElement("input");
 	el.type = 'range';
 	el.min = 0;
 	el.max = 100;
+	// todo make this a param
+	el.value = 30;
 	el.name = 'velocity-range';
 	el.className ='velo-range';
+
+	el.addEventListener("input", this.onInputValue.bind(this));
+
+	this.mediator.on("velocity:number:changed", this.setValue.bind(this));
 }
 
 VeloSliderInput.prototype.getDOMNode = function () {
 	return this.el;
 }
 
+VeloSliderInput.prototype.setValue = function ( value ) {
+	var sliderValue;
+	if ( value <= 0 ) {
+		sliderValue =  Math.round(( value + 100 ) * 3 / 10);
+	} else {
+		sliderValue = Math.round(30 + ( value ) * 7 / 10);
+	}
+
+	this.el.value = sliderValue;
+
+	// console.log(value, "->", sliderValue);
+}
+
+VeloSliderInput.prototype.onInputValue = function () {
+
+	var computedValue,
+		value = this.el.value;
+
+	if ( value < 30 ) {
+		computedValue = -100 + Math.round( value / 30 * 100 ) ;
+	} else {
+		computedValue = Math.round( (value - 30 ) / 70 * 100 );
+	}
+
+	// console.log(value, "->", computedValue);
+
+	this.mediator.emit("velocity:slider:changed", computedValue);
+}
+
 module.exports = VeloSliderInput;
-},{"./index.less":8,"utils/math":11}],8:[function(require,module,exports){
+},{"./index.less":8,"utils/math":11,"utils/mediator":12}],8:[function(require,module,exports){
 arguments[4][3][0].apply(exports,arguments)
 },{"dup":3}],9:[function(require,module,exports){
 require("./index.less");
 
-var 
-	EventEmitter = require("events").EventEmitter,
+var
 	StarCanvas = require("./components/star-canvas"),
 	ValueSlider = require("./components/velo-control"),
-	Mediator = new EventEmitter();
+	mediator = require("./utils/mediator").getInstance();
 
-var starCanvas = new StarCanvas(Mediator);
-var valueSldier = new ValueSlider(Mediator);
+var starCanvas = new StarCanvas();
+var valueSldier = new ValueSlider();
 
 var mainNode = document.getElementById("app-container");
 
 starCanvas.setImage("./src/star-with-transparent-bg.png");
 
+mediator.on("velocity:changed", function ( value ) {
+	console.log("should change velocity", value );
+	// starCanvas.alertImagePixel(value);
+});
 
 mainNode.appendChild( starCanvas.getDOMNode() );
 mainNode.appendChild( valueSldier.getDOMNode() );
 
-},{"./components/star-canvas":2,"./components/velo-control":4,"./index.less":10,"events":1}],10:[function(require,module,exports){
+},{"./components/star-canvas":2,"./components/velo-control":4,"./index.less":10,"./utils/mediator":12}],10:[function(require,module,exports){
 arguments[4][3][0].apply(exports,arguments)
 },{"dup":3}],11:[function(require,module,exports){
 module.exports = {
@@ -460,4 +526,16 @@ module.exports = {
 		return ( 1-w ) * a + w * b;
 	} 
 }
-},{}]},{},[9]);
+},{}],12:[function(require,module,exports){
+var instance = null,
+	EventEmitter = require("events").EventEmitter;
+	
+module.exports = {
+	getInstance : function () {
+		if ( !instance ) {
+			instance = new EventEmitter();
+		}
+		return instance;
+	}
+};
+},{"events":1}]},{},[9]);

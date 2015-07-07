@@ -1,8 +1,8 @@
 require("./index.less");
 
-function StarCanvas ( Mediator, options  ) {
+function StarCanvas ( options ) {
 
-	this.mediator = Mediator;
+	this.mediator = require("utils/mediator").getInstance();
 	var canvas = this.canvas = document.createElement("canvas");
 	canvas.className='star-canvas';
 	if ( options && options.imageSrc ) {
