@@ -11,5 +11,9 @@
     "canvas"
   ],
   "author": "Vlad Nicula <vladnicula@gmail.com> (https://github.com/vladnicula)",
-  "license": "MIT"
+  "license": "MIT",
+  "dependencies": {
+    "browserify": "^10.2.4",
+    "gulp": "^3.9.0"
+  }
 }
